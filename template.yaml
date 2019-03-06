@@ -10,6 +10,7 @@ Resources:
           Value: !Sub
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName}
             - ResourceName: VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet1:
     Metadata:
       StackeryManaged: true
@@ -30,6 +31,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Private Subnet 1
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet2:
     Metadata:
       StackeryManaged: true
@@ -50,6 +52,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Private Subnet 2
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnet1:
     Metadata:
       StackeryManaged: true
@@ -71,6 +74,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Public Subnet 1
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnet2:
     Metadata:
       StackeryManaged: true
@@ -92,12 +96,14 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Public Subnet 2
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet1NatGatewayEIP:
     Metadata:
       StackeryManaged: true
     Type: AWS::EC2::EIP
     Properties:
       Domain: vpc
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet1NatGateway:
     Metadata:
       StackeryManaged: true
@@ -105,6 +111,7 @@ Resources:
     Properties:
       AllocationId: !GetAtt VirtualNetworkPrivateSubnet1NatGatewayEIP.AllocationId
       SubnetId: !Ref VirtualNetworkPublicSubnet1
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet1RouteTable:
     Metadata:
       StackeryManaged: true
@@ -116,6 +123,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Private Subnet 1 Route Table
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet1NatGatewayRoute:
     Metadata:
       StackeryManaged: true
@@ -124,6 +132,7 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref VirtualNetworkPrivateSubnet1NatGateway
       RouteTableId: !Ref VirtualNetworkPrivateSubnet1RouteTable
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet1RouteTableAssociation:
     Metadata:
       StackeryManaged: true
@@ -131,12 +140,14 @@ Resources:
     Properties:
       RouteTableId: !Ref VirtualNetworkPrivateSubnet1RouteTable
       SubnetId: !Ref VirtualNetworkPrivateSubnet1
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet2NatGatewayEIP:
     Metadata:
       StackeryManaged: true
     Type: AWS::EC2::EIP
     Properties:
       Domain: vpc
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet2NatGateway:
     Metadata:
       StackeryManaged: true
@@ -144,6 +155,7 @@ Resources:
     Properties:
       AllocationId: !GetAtt VirtualNetworkPrivateSubnet2NatGatewayEIP.AllocationId
       SubnetId: !Ref VirtualNetworkPublicSubnet2
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet2RouteTable:
     Metadata:
       StackeryManaged: true
@@ -155,6 +167,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Private Subnet 2 Route Table
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet2NatGatewayRoute:
     Metadata:
       StackeryManaged: true
@@ -163,6 +176,7 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       NatGatewayId: !Ref VirtualNetworkPrivateSubnet2NatGateway
       RouteTableId: !Ref VirtualNetworkPrivateSubnet2RouteTable
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPrivateSubnet2RouteTableAssociation:
     Metadata:
       StackeryManaged: true
@@ -170,6 +184,7 @@ Resources:
     Properties:
       RouteTableId: !Ref VirtualNetworkPrivateSubnet2RouteTable
       SubnetId: !Ref VirtualNetworkPrivateSubnet2
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnetsInternetGateway:
     Metadata:
       StackeryManaged: true
@@ -180,6 +195,7 @@ Resources:
           Value: !Sub
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Public Subnets Internet Gateway
             - ResourceName: VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnetsInternetGatewayAttachment:
     Metadata:
       StackeryManaged: true
@@ -187,6 +203,7 @@ Resources:
     Properties:
       InternetGatewayId: !Ref VirtualNetworkPublicSubnetsInternetGateway
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnetsRouteTable:
     Metadata:
       StackeryManaged: true
@@ -198,6 +215,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Virtual Network ${ResourceName} Public Subnets Route Table
             - ResourceName: VirtualNetwork
       VpcId: !Ref VirtualNetwork
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnetsInternetGatewayRoute:
     Metadata:
       StackeryManaged: true
@@ -206,6 +224,7 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref VirtualNetworkPublicSubnetsInternetGateway
       RouteTableId: !Ref VirtualNetworkPublicSubnetsRouteTable
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnet1RouteTableAssociation:
     Metadata:
       StackeryManaged: true
@@ -213,6 +232,7 @@ Resources:
     Properties:
       RouteTableId: !Ref VirtualNetworkPublicSubnetsRouteTable
       SubnetId: !Ref VirtualNetworkPublicSubnet1
+    Condition: VirtualNetworkCreateNewResource
   VirtualNetworkPublicSubnet2RouteTableAssociation:
     Metadata:
       StackeryManaged: true
@@ -220,6 +240,7 @@ Resources:
     Properties:
       RouteTableId: !Ref VirtualNetworkPublicSubnetsRouteTable
       SubnetId: !Ref VirtualNetworkPublicSubnet2
+    Condition: VirtualNetworkCreateNewResource
   Database:
     Type: AWS::RDS::DBCluster
     Properties:
@@ -244,8 +265,14 @@ Resources:
         - Stack ${StackTagName} Environment ${EnvironmentTagName} Database ${ResourceName} VPC Subnets
         - ResourceName: Database
       SubnetIds:
-        - !Ref VirtualNetworkPrivateSubnet1
-        - !Ref VirtualNetworkPrivateSubnet2
+        - !If
+          - VirtualNetworkUseExistingResource
+          - !GetAtt VirtualNetworkExistingResource.PrivateSubnet1
+          - !Ref VirtualNetworkPrivateSubnet1
+        - !If
+          - VirtualNetworkUseExistingResource
+          - !GetAtt VirtualNetworkExistingResource.PrivateSubnet2
+          - !Ref VirtualNetworkPrivateSubnet2
       Tags:
         - Key: Name
           Value: !Sub
@@ -266,7 +293,10 @@ Resources:
           Value: !Sub
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Database ${ResourceName} VPC Security Group
             - ResourceName: Database
-      VpcId: !Ref VirtualNetwork
+      VpcId: !If
+        - VirtualNetworkUseExistingResource
+        - !Ref VirtualNetworkExistingResource
+        - !Ref VirtualNetwork
     Condition: DatabaseCreateNewResource
   generateEmail:
     Type: AWS::Serverless::Function
@@ -286,10 +316,19 @@ Resources:
         - AWSLambdaENIManagementAccess
       VpcConfig:
         SecurityGroupIds:
-          - !GetAtt VirtualNetwork.DefaultSecurityGroup
+          - !If
+            - VirtualNetworkUseExistingResource
+            - !GetAtt VirtualNetworkExistingResource.DefaultSecurityGroup
+            - !GetAtt VirtualNetwork.DefaultSecurityGroup
         SubnetIds:
-          - !Ref VirtualNetworkPrivateSubnet1
-          - !Ref VirtualNetworkPrivateSubnet2
+          - !If
+            - VirtualNetworkUseExistingResource
+            - !GetAtt VirtualNetworkExistingResource.PrivateSubnet1
+            - !Ref VirtualNetworkPrivateSubnet1
+          - !If
+            - VirtualNetworkUseExistingResource
+            - !GetAtt VirtualNetworkExistingResource.PrivateSubnet2
+            - !Ref VirtualNetworkPrivateSubnet2
       Environment:
         Variables:
           DB_ID: !If
@@ -320,6 +359,13 @@ Resources:
       Type: database
       Data: !Ref EnvConfigdbarnAsString
     Condition: DatabaseUseExistingResource
+  VirtualNetworkExistingResource:
+    Type: Custom::StackeryExistingResource
+    Properties:
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:stackery-agent-commander
+      Type: virtualNetwork
+      Data: !Ref EnvConfigvpcDataAsString
+    Condition: VirtualNetworkUseExistingResource
 Parameters:
   StackTagName:
     Type: String
@@ -330,12 +376,21 @@ Parameters:
   EnvConfigdbarnAsString:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /<EnvironmentName>/db/arn
+  EnvConfigvpcDataAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/vpcData
 Conditions:
   DatabaseCreateNewResource: !Equals
     - 'false'
     - !Ref EnvConfigdbarnAsString
   DatabaseUseExistingResource: !Not
     - Condition: DatabaseCreateNewResource
+  VirtualNetworkCreateNewResource: !Equals
+    - 'false'
+    - !Ref EnvConfigvpcDataAsString
+  VirtualNetworkUseExistingResource: !Not
+    - Condition: VirtualNetworkCreateNewResource
 Metadata:
   EnvConfigParameters:
     EnvConfigdbarnAsString: db.arn
+    EnvConfigvpcDataAsString: vpcData
