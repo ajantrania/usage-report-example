@@ -236,6 +236,7 @@ Resources:
       StorageEncrypted: true
       VpcSecurityGroupIds:
         - !Ref DatabaseSecurityGroup
+    Condition: DatabaseCreateNewResource
   DatabaseSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
@@ -250,6 +251,7 @@ Resources:
           Value: !Sub
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Database ${ResourceName} VPC Subnets
             - ResourceName: Database
+    Condition: DatabaseCreateNewResource
   DatabaseSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -265,6 +267,7 @@ Resources:
             - Stack ${StackTagName} Environment ${EnvironmentTagName} Database ${ResourceName} VPC Security Group
             - ResourceName: Database
       VpcId: !Ref VirtualNetwork
+    Condition: DatabaseCreateNewResource
   generateEmail:
     Type: AWS::Serverless::Function
     Properties:
@@ -289,15 +292,34 @@ Resources:
           - !Ref VirtualNetworkPrivateSubnet2
       Environment:
         Variables:
-          DB_ID: !Ref Database
-          DB_ADDRESS: !GetAtt Database.Endpoint.Address
-          DB_PORT: !GetAtt Database.Endpoint.Port
-          DB_ARN: !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${Database}
+          DB_ID: !If
+            - DatabaseUseExistingResource
+            - !Ref DatabaseExistingResource
+            - !Ref Database
+          DB_ADDRESS: !If
+            - DatabaseUseExistingResource
+            - !GetAtt DatabaseExistingResource.Endpoint.Address
+            - !GetAtt Database.Endpoint.Address
+          DB_PORT: !If
+            - DatabaseUseExistingResource
+            - !GetAtt DatabaseExistingResource.Endpoint.Port
+            - !GetAtt Database.Endpoint.Port
+          DB_ARN: !If
+            - DatabaseUseExistingResource
+            - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${DatabaseExistingResource}
+            - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${Database}
       Events:
         Timer:
           Type: Schedule
           Properties:
             Schedule: rate(1 minute)
+  DatabaseExistingResource:
+    Type: Custom::StackeryExistingResource
+    Properties:
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:stackery-agent-commander
+      Type: database
+      Data: !Ref EnvConfigdbarnAsString
+    Condition: DatabaseUseExistingResource
 Parameters:
   StackTagName:
     Type: String
@@ -305,3 +327,15 @@ Parameters:
   EnvironmentTagName:
     Type: String
     Description: Environment Name (injected by Stackery at deployment time)
+  EnvConfigdbarnAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/db/arn
+Conditions:
+  DatabaseCreateNewResource: !Equals
+    - 'false'
+    - !Ref EnvConfigdbarnAsString
+  DatabaseUseExistingResource: !Not
+    - Condition: DatabaseCreateNewResource
+Metadata:
+  EnvConfigParameters:
+    EnvConfigdbarnAsString: db.arn
