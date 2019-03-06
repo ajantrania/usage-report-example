@@ -352,11 +352,15 @@ Resources:
             - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${DatabaseExistingResource}
             - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${Database}
           SECRETS_NAMESPACE: !Sub /${EnvironmentTagName}/
+          DB_NAME: !Ref EnvConfigdbdatabaseAsString
+          DB_USER: !Ref EnvConfigdbuserAsString
+          TARGET_EMAIL: !Ref EnvConfigemailstargetAsString
+          SOURCE_EMAIL: !Ref EnvConfigemailssourceAsString
       Events:
         Timer:
           Type: Schedule
           Properties:
-            Schedule: rate(1 minute)
+            Schedule: rate(1 day)
   DatabaseExistingResource:
     Type: Custom::StackeryExistingResource
     Properties:
@@ -384,6 +388,18 @@ Parameters:
   EnvConfigvpcDataAsString:
     Type: AWS::SSM::Parameter::Value<String>
     Default: /<EnvironmentName>/vpcData
+  EnvConfigdbdatabaseAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/db/database
+  EnvConfigdbuserAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/db/user
+  EnvConfigemailstargetAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/emails/target
+  EnvConfigemailssourceAsString:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /<EnvironmentName>/emails/source
 Conditions:
   DatabaseCreateNewResource: !Equals
     - 'false'
@@ -399,3 +415,7 @@ Metadata:
   EnvConfigParameters:
     EnvConfigdbarnAsString: db.arn
     EnvConfigvpcDataAsString: vpcData
+    EnvConfigdbdatabaseAsString: db.database
+    EnvConfigdbuserAsString: db.user
+    EnvConfigemailstargetAsString: emails.target
+    EnvConfigemailssourceAsString: emails.source
