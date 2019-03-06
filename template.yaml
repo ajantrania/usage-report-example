@@ -314,6 +314,8 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
         - AWSLambdaENIManagementAccess
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:/${EnvironmentTagName}/*
       VpcConfig:
         SecurityGroupIds:
           - !If
@@ -347,6 +349,7 @@ Resources:
             - DatabaseUseExistingResource
             - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${DatabaseExistingResource}
             - !Sub arn:aws:rds:${AWS::Region}:${AWS::AccountId}:cluster:${Database}
+          SECRETS_NAMESPACE: !Sub /${EnvironmentTagName}/
       Events:
         Timer:
           Type: Schedule
