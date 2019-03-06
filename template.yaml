@@ -316,6 +316,8 @@ Resources:
         - AWSLambdaENIManagementAccess
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: !Sub arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:/${EnvironmentTagName}/*
+        - SESCrudPolicy:
+            IdentityName: support@stackery.io
       VpcConfig:
         SecurityGroupIds:
           - !If
